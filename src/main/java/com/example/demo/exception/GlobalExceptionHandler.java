@@ -3,7 +3,9 @@ package com.example.demo.exception;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.util.stream.Collectors;
@@ -11,12 +13,13 @@ import java.util.stream.Collectors;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    // 处理业务异常
+    @ExceptionHandler(BusinessException.class)
     public ResponseEntity<ErrorResponse> handleBusinessException(BusinessException ex) {
+        ErrorCode errorCode = ex.getErrorCode();
         ErrorResponse response = new ErrorResponse(
-                ex.getErrorCode(),
-                ex.getMessage(),
-                "业务逻辑错误"
+                errorCode.getCode(),
+                StringUtils.hasText(ex.getMessage()) ? ex.getMessage() : errorCode.getMessage(),
+                ex.getMessage()
         );
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
     }

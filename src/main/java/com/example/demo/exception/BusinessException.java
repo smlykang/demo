@@ -7,15 +7,29 @@ import lombok.Getter;
  */
 @Getter
 public class BusinessException extends RuntimeException {
-    private String errorCode;
+    private final ErrorCode errorCode;
 
-    public BusinessException(String errorCode, String message) {
-        super(message);
+    // 基础构造
+    public BusinessException(ErrorCode errorCode) {
+        super(errorCode.getMessage());
         this.errorCode = errorCode;
     }
 
-    public BusinessException(String errorCode, String message, Throwable cause) {
-        super(message, cause);
+    // 支持自定义消息覆盖
+    public BusinessException(ErrorCode errorCode, String customMessage) {
+        super(customMessage);
+        this.errorCode = errorCode;
+    }
+
+    // 带原始异常的构造
+    public BusinessException(ErrorCode errorCode, Throwable cause) {
+        super(errorCode.getMessage(), cause);
+        this.errorCode = errorCode;
+    }
+
+    // 完整构造
+    public BusinessException(ErrorCode errorCode, String customMessage, Throwable cause) {
+        super(customMessage, cause);
         this.errorCode = errorCode;
     }
 
